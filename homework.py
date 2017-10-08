@@ -67,6 +67,36 @@ def generate_terminal():
 			terminal[split_key[2]] = split_key[2]
 
 
+
+def generate_non_associated_rule(root):
+	str = root.label + ' -> '
+	
+	#add the root and its both non terminal children
+	non_terminals[root.label] = root.label
+	if root.label in probability:
+		probability[root.label] += 1
+	else:
+		probability[root.label] = 1
+
+	if len(root.children) == 2:
+		for child in root.children:
+			non_terminals[child.label] = child.label
+			if child.label in probability:
+				probability[child.label] += 1
+			else:
+				probability[child.label] = 1
+
+	for child in root.children:
+		str += child.label + ' '
+
+	#remove the last space.
+	str = str.strip()
+
+	if str in rules:
+		rules[str] += 1
+	else:
+		rules[str] = 1
+
 def generate_rule(root):
 
 	if root is not None:
@@ -86,6 +116,8 @@ def generate_rule(root):
 			str = ""
 			if len(root.children) == 1:
 
+				generate_non_associated_rule(root)
+
 				root_optimal_label = root.label + '$' + root.parent.label 
 				str = root.label + '$' + root.parent.label + ' -> '
 				non_terminals[root_optimal_label] = root_optimal_label
@@ -103,6 +135,9 @@ def generate_rule(root):
 				
 
 			elif len(root.children) == 2:
+
+
+				generate_non_associated_rule(root)
 
 				#generate the rule 
 				if root.parent is not None:
@@ -214,8 +249,6 @@ for line in file:
 	tree_parsed = Tree.from_str(line)
 	generate_rule(tree_parsed.root)
 
-
-
 #genereate all the terminals.
 generate_terminal()
 
@@ -226,7 +259,6 @@ for key in rules:
 	probability_rules[key] =  (rules[key]  * 1.0) / (probability[key.split(' ')[0]])
 	if max < rules[key]:
 		max = rules[key]
-
 
 #generate all the transistions.
 generate_transisition()
