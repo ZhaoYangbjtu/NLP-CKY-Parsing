@@ -86,40 +86,51 @@ def generate_rule(root):
 			str = ""
 			if len(root.children) == 1:
 
+				root_optimal_label = root.label + '$' + root.parent.label 
 				str = root.label + '$' + root.parent.label + ' -> '
-				non_terminals[str] = str
-				
+				non_terminals[root_optimal_label] = root_optimal_label
+					
+
+				if root_optimal_label in probability:
+					probability[root_optimal_label] += 1
+				else:
+					probability[root_optimal_label] = 1
+
+
 				for child in root.children:
 					#create the rule 
 					str += child.label + ' '
-					
-					#add the child non terminals to the count (N)
-					if child.label in probability:
-						probability[child.label] += 1
-					else:
-						probability[child.label] = 1
+				
 
 			elif len(root.children) == 2:
 
 				#generate the rule 
 				if root.parent is not None:
 					str = root.label + '$' + root.parent.label + ' -> '
+					root_optimal_label = root.label + '$' + root.parent.label 
 				else:
 					str = root.label + ' -> '
+					root_optimal_label = root.label
 				
 				#for root nodes
-				non_terminals[str] = str
+				non_terminals[root_optimal_label] = root_optimal_label
+				if root_optimal_label in probability:
+					probability[root_optimal_label] += 1
+				else:
+					probability[root_optimal_label] = 1
 				
+
+
 				for child in root.children:
 					str += child.label + '$' + root.label + ' '
-
+					child_optimal_label = child.label + '$' + root.label
 					#for each child nodes	
-					non_terminals[(child.label+ '$' + root.label)] = child.label+ '$' + root.label
+					non_terminals[child_optimal_label] = child_optimal_label
 
-					if (child.label+ '$' + root.label) in probability:
-						probability[child.label+ '$' + root.label] += 1
+					if (child_optimal_label) in probability:
+						probability[child_optimal_label] += 1
 					else:
-						probability[child.label+ '$' + root.label] = 1
+						probability[child_optimal_label] = 1
 
 			#remove the last space.
 			str = str.strip()
@@ -205,12 +216,8 @@ for line in file:
 
 
 
-
-
 #genereate all the terminals.
 generate_terminal()
-
-print terminal
 
 #identify the max rule count 
 # adnd compute the probability of each rule 
@@ -224,28 +231,29 @@ for key in rules:
 #generate all the transistions.
 generate_transisition()
 
-# #generate on dev data the parse tree.
-# dev_file = open (sys.argv[2])
-# for line in dev_file:
-# 	line = line.strip('\n')
-	
-# 	x_axis.append(math.log10(len(line.split(' '))))
-# 	parse_tree = ""
-# 	try:
-# 		start = time.clock()
 
-# 		score = defaultdict(lambda:defaultdict(lambda:defaultdict(float)))
-# 		back = defaultdict(lambda:defaultdict(lambda:defaultdict(tuple)))
-# 		parse_tree = parser(line)
+#generate on dev data the parse tree.
+dev_file = open (sys.argv[2])
+for line in dev_file:
+	line = line.strip('\n')
+	
+	x_axis.append(math.log10(len(line.split(' '))))
+	parse_tree = ""
+	try:
+		start = time.clock()
+
+		score = defaultdict(lambda:defaultdict(lambda:defaultdict(float)))
+		back = defaultdict(lambda:defaultdict(lambda:defaultdict(tuple)))
+		parse_tree = parser(line)
 		
-# 		duration = time.clock() - start
+		duration = time.clock() - start
 		
-# 		y_axis.append(math.log10(duration * 1000))
-# 		print parse_tree
-# 	except IndexError:
-# 		duration = time.clock() - start
-# 		y_axis.append(math.log10(duration * 1000))
-# 		print ""
+		y_axis.append(math.log10(duration * 1000))
+		print parse_tree
+	except IndexError:
+		duration = time.clock() - start
+		y_axis.append(math.log10(duration * 1000))
+		print ""
 
 
 

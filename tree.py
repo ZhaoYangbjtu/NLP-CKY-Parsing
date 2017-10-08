@@ -93,7 +93,7 @@ class Tree(object):
     def _scan_tree(s):
         result = Tree.interior_node.match(s)
         if result != None:
-            label = result.group(1)
+            label = result.group(1).split('$')[0]
             pos = result.end()
             children = []
             (child, length) = Tree._scan_tree(s[pos:])
