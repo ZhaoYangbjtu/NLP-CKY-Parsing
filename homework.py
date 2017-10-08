@@ -20,7 +20,6 @@ y_axis = []
 score = defaultdict(lambda:defaultdict(lambda:defaultdict(float)))
 back = defaultdict(lambda:defaultdict(lambda:defaultdict(tuple)))
 	
-
 def plotgraph(x,y):
 	plt.xlabel('x - axis')
 	# naming the y axis
@@ -120,9 +119,12 @@ def calculate_non_terminals_cky(n):
 			end = begin+span
 			for split in range(begin+1,end):
 				for rule in transistions:
-					A = rule[0]
-					B = rule[1]
-					C = rule[2]
+					if rule[0] is not None:
+						A = rule[0]
+					if rule[1] is not None:
+						B = rule[1]
+					if rule[2] is not None:
+						C = rule[2]
 					rule2 = A+" -> "+B+" "+C
 					prob =  (score[begin][split][B]) * (score[split][end][C])  * probability_rules[rule2]
 					
@@ -144,12 +146,12 @@ def parser(line):
 	calculate_non_terminals_cky(n)
 	
 	t = Tree(Node('TOP',[]))
-	build_tree(back[0][n]['TOP'],back,0,n,t.root)
+	build_tree(back[0][n]['TOP'],0,n,t.root)
 	
 	return t	
 
 
-def build_tree(node,back,begin,end,root):
+def build_tree(node,begin,end,root):
 	
 	left_tnode = Node(node[1],[])
 	right_tnode = Node(node[2],[])
@@ -159,10 +161,10 @@ def build_tree(node,back,begin,end,root):
 	if node[2]=='':
 		return
 	left = back[begin][node[0]][node[1]]
-	build_tree(left,back,begin,node[0],left_tnode)
+	build_tree(left,begin,node[0],left_tnode)
 
 	right = back[node[0]][end][node[2]]
-	build_tree(right,back,node[0],end,right_tnode)
+	build_tree(right,node[0],end,right_tnode)
 
 
 #open file and generate rules
