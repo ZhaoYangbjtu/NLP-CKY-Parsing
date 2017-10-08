@@ -119,7 +119,6 @@ def parser(line):
 	score = defaultdict(lambda:defaultdict(lambda:defaultdict(float)))
 	back = defaultdict(lambda:defaultdict(lambda:defaultdict(tuple)))
 	
-	print score
 	for i in range(n):
 		for A in non_terminals:
 			rule = A + " -> "+all_words[i]
