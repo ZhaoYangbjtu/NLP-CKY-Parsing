@@ -5,7 +5,7 @@ from bigfloat import bigfloat
 import math
 import time
 import sys
-
+import matplotlib.pyplot as plt
 
 rules = {}
 probability = {}
@@ -21,16 +21,7 @@ score = defaultdict(lambda:defaultdict(lambda:defaultdict(float)))
 back = defaultdict(lambda:defaultdict(lambda:defaultdict(tuple)))
 	
 
-import matplotlib.pyplot as plt
- 
 def plotgraph(x,y):
-	# # x axis values
-	# x = demogrammar.plot_x
-	# # corresponding y axis values
-	# y = demogrammar.plot_y
-	 
-	# plotting the points 
-	# naming the x axis
 	plt.xlabel('x - axis')
 	# naming the y axis
 	plt.ylabel('y - axis')
@@ -175,7 +166,7 @@ def build_tree(node,back,begin,end,root):
 
 
 #open file and generate rules
-file = open ('train.trees.pre.unk')
+file = open (sys.argv[1])
 for line in file:
 	tree_parsed = Tree.from_str(line)
 	generate_rule(tree_parsed.root)
@@ -196,7 +187,7 @@ generate_terminal()
 generate_transisition()
 
 #generate on dev data the parse tree.
-dev_file = open ('dev.strings')
+dev_file = open (sys.argv[2])
 for line in dev_file:
 	line = line.strip('\n')
 	
