@@ -60,13 +60,12 @@ def replace_word_by_unk(line):
 
 
 def generate_terminal():
+	count = 0
 	for key in rules:
 		split_key = key.split(' ')
 		if len(split_key) == 3:
-			if split_key[2] in terminal:
-				terminal[split_key[2]] += 1
-			else:
-				terminal[split_key[2]] = 1
+			terminal[split_key[2]] = split_key[2]
+
 
 def generate_rule(root):
 
@@ -205,8 +204,13 @@ for line in file:
 	generate_rule(tree_parsed.root)
 
 
-print len(non_terminals)
-print len(terminal)
+
+
+
+#genereate all the terminals.
+generate_terminal()
+
+print terminal
 
 #identify the max rule count 
 # adnd compute the probability of each rule 
@@ -216,34 +220,32 @@ for key in rules:
 	if max < rules[key]:
 		max = rules[key]
 
-#genereate all the terminals.
-generate_terminal()
 
 #generate all the transistions.
 generate_transisition()
 
-#generate on dev data the parse tree.
-dev_file = open (sys.argv[2])
-for line in dev_file:
-	line = line.strip('\n')
+# #generate on dev data the parse tree.
+# dev_file = open (sys.argv[2])
+# for line in dev_file:
+# 	line = line.strip('\n')
 	
-	x_axis.append(math.log10(len(line.split(' '))))
-	parse_tree = ""
-	try:
-		start = time.clock()
+# 	x_axis.append(math.log10(len(line.split(' '))))
+# 	parse_tree = ""
+# 	try:
+# 		start = time.clock()
 
-		score = defaultdict(lambda:defaultdict(lambda:defaultdict(float)))
-		back = defaultdict(lambda:defaultdict(lambda:defaultdict(tuple)))
-		parse_tree = parser(line)
+# 		score = defaultdict(lambda:defaultdict(lambda:defaultdict(float)))
+# 		back = defaultdict(lambda:defaultdict(lambda:defaultdict(tuple)))
+# 		parse_tree = parser(line)
 		
-		duration = time.clock() - start
+# 		duration = time.clock() - start
 		
-		y_axis.append(math.log10(duration * 1000))
-		print parse_tree
-	except IndexError:
-		duration = time.clock() - start
-		y_axis.append(math.log10(duration * 1000))
-		print ""
+# 		y_axis.append(math.log10(duration * 1000))
+# 		print parse_tree
+# 	except IndexError:
+# 		duration = time.clock() - start
+# 		y_axis.append(math.log10(duration * 1000))
+# 		print ""
 
 
 
