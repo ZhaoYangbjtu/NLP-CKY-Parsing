@@ -17,6 +17,9 @@ transistions = []
 x_axis = []
 y_axis = []
 
+score = defaultdict(lambda:defaultdict(lambda:defaultdict(float)))
+back = defaultdict(lambda:defaultdict(lambda:defaultdict(tuple)))
+	
 
 import matplotlib.pyplot as plt
  
@@ -108,23 +111,18 @@ def generate_rule(root):
  	else:
  		return
 
-def parser(line):
-	
-	newLine = replace_word_by_unk(line)
-	all_words = newLine.split(' ')
-	n = len(all_words)
 
-	
-	no_of_non_terms = len(non_terminals)
-	score = defaultdict(lambda:defaultdict(lambda:defaultdict(float)))
-	back = defaultdict(lambda:defaultdict(lambda:defaultdict(tuple)))
-	
+def calculate_terminals_cky(n,all_words):
 	for i in range(n):
 		for A in non_terminals:
 			rule = A + " -> "+all_words[i]
 			if rule in probability_rules:
 				score[i][i+1][A] = probability_rules[rule]
 				back[i][i+1][A] = (i, all_words[i], '', A)
+
+
+
+def calculate_non_terminals_cky(n):
 	for span in range(2,n+1):
 		for begin in range(n-span+1):
 			end = begin+span
@@ -139,12 +137,21 @@ def parser(line):
 					if prob > score[begin][end][A]:
 						score[begin][end][A] = prob
 						back[begin][end][A] = (split,B,C,A)
+
+def parser(line):
+	
+	newLine = replace_word_by_unk(line)
+	all_words = newLine.split(' ')
+	n = len(all_words)
+
+	no_of_non_terms = len(non_terminals)
+	
+	calculate_terminals_cky(n,all_words)
+	calculate_non_terminals_cky(n)
 	
 	t = Tree(Node('TOP',[]))
 	build_tree(back[0][n]['TOP'],back,0,n,t.root)
 	
-
-
 	return t	
 
 
@@ -194,8 +201,13 @@ for line in dev_file:
 	parse_tree = ""
 	try:
 		start = time.clock()
+
+		score = defaultdict(lambda:defaultdict(lambda:defaultdict(float)))
+		back = defaultdict(lambda:defaultdict(lambda:defaultdict(tuple)))
 		parse_tree = parser(line)
+		
 		duration = time.clock() - start
+		
 		y_axis.append(math.log10(duration * 1000))
 		print parse_tree
 	except IndexError:
