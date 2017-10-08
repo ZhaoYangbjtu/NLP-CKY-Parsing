@@ -113,17 +113,18 @@ def generate_rule(root):
 
 
 def calculate_terminals_cky(n,all_words):
-	for i in range(n):
+	i = 0
+	while i < (n):
 		for A in non_terminals:
 			rule = A + " -> "+all_words[i]
 			if rule in probability_rules:
 				score[i][i+1][A] = probability_rules[rule]
 				back[i][i+1][A] = (i, all_words[i], '', A)
-
-
+		i += 1			
 
 def calculate_non_terminals_cky(n):
-	for span in range(2,n+1):
+	span = 2 
+	while span < n+1:
 		for begin in range(n-span+1):
 			end = begin+span
 			for split in range(begin+1,end):
@@ -137,6 +138,8 @@ def calculate_non_terminals_cky(n):
 					if prob > score[begin][end][A]:
 						score[begin][end][A] = prob
 						back[begin][end][A] = (split,B,C,A)
+		span +=1 
+		
 
 def parser(line):
 	
