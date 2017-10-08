@@ -37,7 +37,6 @@ def plotgraph(x,y):
 	plt.scatter(x, y)
 	 
 	# function to show the plot
-	print x, y
 	plt.show()	
 
 
@@ -205,7 +204,6 @@ for line in dev_file:
 		y_axis.append(math.log10(duration * 1000))
 		print ""
 
-plotgraph(x_axis,y_axis)
 
 
 
