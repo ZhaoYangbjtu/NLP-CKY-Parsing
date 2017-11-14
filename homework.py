@@ -5,7 +5,6 @@ from bigfloat import bigfloat
 import math
 import time
 import sys
-import matplotlib.pyplot as plt
 
 rules = {}
 probability = {}
@@ -20,17 +19,7 @@ y_axis = []
 score = defaultdict(lambda:defaultdict(lambda:defaultdict(float)))
 back = defaultdict(lambda:defaultdict(lambda:defaultdict(tuple)))
 	
-def plotgraph(x,y):
-	plt.xlabel('x - axis')
-	# naming the y axis
-	plt.ylabel('y - axis')
-	 
-	# giving a title to my graph
-	plt.title('Parse time vs Sentence length!')
-	plt.scatter(x, y)
-	 
-	# function to show the plot
-	plt.show()	
+
 
 
 def generate_transisition():
